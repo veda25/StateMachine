@@ -30,7 +30,7 @@ void setup() {
     pinMode(ledPins[i],OUTPUT);  
   */
   }
- int cp1,cp2,cp3,cp4,cp5 = 0;
+int cp1,cp2,cp3,cp4,cp5 = 0;
 
 
 int CapSense1 = 8;
@@ -43,7 +43,8 @@ int LED1 = 2;
 int LED2 = 3;
 int LED3 = 4;
 int LED4 = 5;
-int LED3 = 6;
+int LED5 = 6;
+
 
 
 void setup() {
@@ -58,9 +59,10 @@ void setup() {
   pinMode(LED3,OUTPUT);
   pinMode(LED4,OUTPUT);
   pinMode(LED5,OUTPUT);
-  
   Serial.begin(9600);
   
+
+//  serial.begin(9600);
 }
 
 void loop() {
@@ -84,6 +86,7 @@ void loop() {
   Serial.print("on"); } 
   else
   digitalWrite(LED2, HIGH);
+  
 
   if(cp3 != 0 ){
   digitalWrite(LED3, LOW); 
@@ -95,7 +98,7 @@ void loop() {
   digitalWrite(LED4, LOW); 
   Serial.print("on"); } 
   else
-  digitalWrite(LE4, HIGH);
+  digitalWrite(LED4, HIGH);
 
  if(cp5 != 0 ){
   digitalWrite(LED5, LOW); 
@@ -104,3 +107,4 @@ void loop() {
   digitalWrite(LED5, HIGH);
 
 }
+
