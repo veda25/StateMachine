@@ -4,8 +4,11 @@
 int capValue[5];
 int capSense[5];
 int ledPins[5];
-int servoSpeed; 
+int testAngle;
+int emojiToggle;
+int emojiState;
 int servoDirection[4];
+int servoAngle[4];
 
 void setup() {
 
@@ -17,9 +20,12 @@ void setup() {
   //roboServo[3].attach(); // shoulderServo (1)
   servoSpeed = 1; // Rotation speed
   for (int i=0;i<5;i++) {
-    servoDirection[i] = 1; // 1 == cw, -1 == ccw (maybe)  
+    servoDirection[i] = 1; // (-'ve is opposite direction, can be increased if code changed below...)
   }
-  
+
+  // Emoji State (and LEDS)
+  emojiToggle = 0; // 0 = unpressed, 1 = pressed
+  emojiState = 0; // loops after 4...
 
   // Pin references
   capSense[0] = 14; // (should be moved to analog read if we want to measure anything)
@@ -51,14 +57,57 @@ void loop() {
     capValue[i] = digitalRead(capSense[i]); // get value from capacitor sensor
     
     if (capValue[i] != 0) { // High recieved
-      digitalWrite(ledPins[i], HIGH); 
+      digitalWrite(ledPins[i], LOW); 
       Serial.print("on"); 
 
-      
+      // Set angle based on servo type
+      if (i == 0) {
+        testAngle = 360;
+
+        // STUB: Emoji rotation
+        // Should toggle-trigger a state change 
+        if (emojiToggle == 0) {
+          emojiToggle = 1;
+          emojiState++;
+          if (emojiState >= 5) { // Loop Emoji State
+            emojiState = 0;  
+          }
+        }
+        
+      } else if (i != 4) { // Note: no servo at 4
+        testAngle = 180;
+
+        
+        // Flip Direction at Limits
+        if ((servoAngle[i] <= 0 && servoDirection[i] == -1) || (servoAngle[i] >= testAngle && servoDirection[i] == 1)) {
+          servoDirection[i] *= -1;    
+          
+        }
+        // Increment servo angle
+        servoAngle[i] += servoDirection[i];
+
+        // Apply angle to servo
+        roboServo[i].write(servoAngle)[i];
+
+        // STUB: timing?
+        
+      }
       
     } else { // Low received
-      digitalWrite(ledPins[i], LOW); 
+      digitalWrite(ledPins[i], HIGH); 
+
+      if (servoAngle[i] > emojiState * 72) {
+        //subtr
+      } else if (servoAngle[i] < emojiState * 72) {
+          //add  
+      }
       
+      // Turn off toggle
+      if (emojiToggle == 1) {
+        emojiToggle = 0;  
+      }
+      
+      // drive LED
     }
   }
 
