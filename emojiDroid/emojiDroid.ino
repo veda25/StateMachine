@@ -1,40 +1,37 @@
 #include <Servo.h>
 
-#define SERVO_A 7 // Note: no semicolons in macro definitions
-#define SERVO_B 8 
-
 // Variable Setup 
 int capValue[5];
 int capSense[5];
 int ledPins[5];
+int servoSpeed; 
+int servoDirection[4];
 
 void setup() {
 
   // Servo Setup
-  Servo armServo;
-  Servo headServo;
-  armServo.attach(6); // Pin 6
-  headServo.attach(3); // Pin 3
-  int servoTarget = 0;
-  /* servoTarget Values (for armServo):
-   * 0 = Shoulder Rotator
-   * 1 = Shoulder Raise
-   * 2 = Elbow
-   * etc: undefined
-   * 
-   */
+  Servo roboServo[4];
+  //roboServo[0].attach(7); // Pin 6: fullServo
+  //roboServo[1].attach(13); // Pin 3: handServo
+  //roboServo[2].attach(); // rotatorServo (0)
+  //roboServo[3].attach(); // shoulderServo (1)
+  servoSpeed = 1; // Rotation speed
+  for (int i=0;i<5;i++) {
+    servoDirection[i] = 1; // 1 == cw, -1 == ccw (maybe)  
+  }
+  
 
   // Pin references
-  capSense[0] = 8;
-  capSense[1] = 9;
-  capSense[2] = 10;
-  capSense[3] = 11;
-  capSense[4] = 12;
-  ledPins[0] = 5;
-  ledPins[1] = 9;
+  capSense[0] = 14; // (should be moved to analog read if we want to measure anything)
+  capSense[1] = 15; // (A0-A4)
+  capSense[2] = 16;
+  capSense[3] = 17;
+  capSense[4] = 18;
+  ledPins[0] = 5; //These are analog out pins (PWM)
+  ledPins[1] = 9; 
   ledPins[2] = 10;
-  ledPins[3] = 11;
-  ledPins[4] = 13;
+  ledPins[3] = 11; 
+  ledPins[4] = 12;
 
   // Set up pin I/O
   for (int i=0;i<5;i++) { 
@@ -54,11 +51,16 @@ void loop() {
     capValue[i] = digitalRead(capSense[i]); // get value from capacitor sensor
     
     if (capValue[i] != 0) { // High recieved
-      digitalWrite(ledPins[i], LOW); 
+      digitalWrite(ledPins[i], HIGH); 
       Serial.print("on"); 
+
+      
       
     } else { // Low received
-      digitalWrite(ledPins[i], HIGH); 
+      digitalWrite(ledPins[i], LOW); 
+      
     }
   }
+
+  
 }

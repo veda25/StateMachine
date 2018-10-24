@@ -6,16 +6,16 @@ int ledPins[5];
 void setup() {
 
   // Pin designation
-  capSense[0] = 8;
-  capSense[1] = 9;
-  capSense[2] = 10;
-  capSense[3] = 11;
-  capSense[4] = 12;
-  ledPins[0] = 2;
-  ledPins[1] = 3;
-  ledPins[2] = 4;
-  ledPins[3] = 5;
-  ledPins[4] = 6;
+  capSense[0] = 14; // (should be moved to analog read if we want to measure anything)
+  capSense[1] = 15; // (A0-A4)
+  capSense[2] = 16;
+  capSense[3] = 17;
+  capSense[4] = 18;
+  ledPins[0] = 5; //These are analog out pins (PWM)
+  ledPins[1] = 9; 
+  ledPins[2] = 10;
+  ledPins[3] = 11; 
+  ledPins[4] = 12;
 
   // Set up pin I/O
   for (int i=0;i<5;i++) { 
