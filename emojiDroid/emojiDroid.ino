@@ -1,7 +1,12 @@
 #include <Servo.h>
 
-#define SERVO_A 7
-#define SERVO_B 8 // Note: no semicolons in macro definitions
+#define SERVO_A 7 // Note: no semicolons in macro definitions
+#define SERVO_B 8 
+
+// Variable Setup 
+int capValue[5];
+int capSense[5];
+int ledPins[5];
 
 void setup() {
 
@@ -29,82 +34,41 @@ void setup() {
   for (int i = 0; i<5;i++) {
     pinMode(ledPins[i],OUTPUT);  
   */
+
+  capSense[0] = 8;
+  capSense[1] = 9;
+  capSense[2] = 10;
+  capSense[3] = 11;
+  capSense[4] = 12;
+  ledPins[0] = 2;
+  ledPins[1] = 3;
+  ledPins[2] = 4;
+  ledPins[3] = 5;
+  ledPins[4] = 6;
+
+  // Set up pin I/O, init capValue[]
+  for (int i=0;i<5;i++) { 
+    capValue[i] = 0;
+    pinMode(capSense[i], INPUT);
+    pinMode(ledPins[i], OUTPUT);
   }
-int cp1,cp2,cp3,cp4,cp5 = 0;
 
-
-int CapSense1 = 8;
-int CapSense2= 9;
-int CapSense3 =10;
-int CapSense4 =11;
-int CapSense5 =12;
-
-int LED1 = 2;
-int LED2 = 3;
-int LED3 = 4;
-int LED4 = 5;
-int LED5 = 6;
-
-
-
-void setup() {
- 
-  pinMode(CapSense1, INPUT);
-  pinMode(CapSense2,INPUT);
-  pinMode(CapSense3, INPUT);
-  pinMode(CapSense4, INPUT);
-  pinMode(CapSense5,INPUT);
-  pinMode(LED1, OUTPUT);
-  pinMode(LED2,OUTPUT);
-  pinMode(LED3,OUTPUT);
-  pinMode(LED4,OUTPUT);
-  pinMode(LED5,OUTPUT);
+  // Default Serial Value (9600)
   Serial.begin(9600);
-  
-
-//  serial.begin(9600);
-}
+  }
 
 void loop() {
 
-   cp1 = digitalRead(CapSense1);
-   cp2 = digitalRead(CapSense2);
-   cp3 = digitalRead(CapSense3); 
-   cp4 = digitalRead(CapSense4);
-   cp5 = digitalRead(CapSense5); 
-   
-
-  if(cp1 != 0 ){
-  digitalWrite(LED1, LOW); 
-  Serial.print("on"); } 
-  else
-  digitalWrite(LED1, HIGH);
-
-
-  if(cp2 != 0 ){
-  digitalWrite(LED2, LOW); 
-  Serial.print("on"); } 
-  else
-  digitalWrite(LED2, HIGH);
-  
-
-  if(cp3 != 0 ){
-  digitalWrite(LED3, LOW); 
-  Serial.print("on"); } 
-  else
-  digitalWrite(LED3, HIGH);
-
-  if(cp4 != 0 ){
-  digitalWrite(LED4, LOW); 
-  Serial.print("on"); } 
-  else
-  digitalWrite(LED4, HIGH);
-
- if(cp5 != 0 ){
-  digitalWrite(LED5, LOW); 
-  Serial.print("on"); } 
-  else
-  digitalWrite(LED5, HIGH);
+  // Trigger LEDs with Capacitor Touch Values
+  for (int i=0;i<5;i++) {
+    capValue[i] = digitalRead(capSense[i]);
+    if (capValue[i] != 0) {
+      digitalWrite(ledPins[i], LOW); 
+      Serial.print("on"); 
+    } else {
+      digitalWrite(ledPins[i], HIGH);
+    }
+  }
 
 }
 
