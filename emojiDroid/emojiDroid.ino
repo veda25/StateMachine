@@ -3,37 +3,40 @@
 // Variable Setup 
 int capValue[5];
 int capSense[5];
+int capThreshold;
 int ledPins[5];
 int testAngle;
 int emojiToggle;
 int emojiState;
+int activeServos;
 int servoDirection[4];
 int servoAngle[4];
+Servo roboServo[4];
 
 void setup() {
 
   // Servo Setup
-  Servo roboServo[4];
-  //roboServo[0].attach(7); // Pin 6: fullServo
-  //roboServo[1].attach(13); // Pin 3: handServo
-  //roboServo[2].attach(); // rotatorServo (0)
-  //roboServo[3].attach(); // shoulderServo (1)
-  servoSpeed = 1; // Rotation speed
+  roboServo[0].attach(7); // Pin 7: fullServo
+  roboServo[1].attach(3); // Pin 3: handServo
+  //roboServo[2].attach(); // rotatorServo 
+  //roboServo[3].attach(); // shoulderServo 
   for (int i=0;i<5;i++) {
     servoDirection[i] = 1; // (-'ve is opposite direction, can be increased if code changed below...)
   }
+  activeServos = 1; //(+1)
 
   // Emoji State (and LEDS)
   emojiToggle = 0; // 0 = unpressed, 1 = pressed
   emojiState = 0; // loops after 4...
+  capThreshold = 300; 
 
   // Pin references
-  capSense[0] = 14; // (should be moved to analog read if we want to measure anything)
-  capSense[1] = 15; // (A0-A4)
-  capSense[2] = 16;
-  capSense[3] = 17;
-  capSense[4] = 18;
-  ledPins[0] = 5; //These are analog out pins (PWM)
+  capSense[0] = A0; // (should be moved to analog read if we want to measure anything)
+  capSense[1] = A1; // (A0-A4)
+  capSense[2] = A2;
+  capSense[3] = A3;
+  capSense[4] = A4;
+  ledPins[0] = 6; //These are analog out pins (PWM)
   ledPins[1] = 9; 
   ledPins[2] = 10;
   ledPins[3] = 11; 
@@ -54,17 +57,13 @@ void loop() {
   // Trigger LEDs with Capacitor Touch Values
   for (int i=0;i<5;i++) { // looping through all sensor inputs
     
-    capValue[i] = digitalRead(capSense[i]); // get value from capacitor sensor
+    capValue[i] = analogRead(capSense[i]); // get value from capacitor sensor
+    capValue[i] = map(capValue[i], 0, 1023, 0, 255);
     
-    if (capValue[i] != 0) { // High recieved
-      digitalWrite(ledPins[i], LOW); 
-      Serial.print("on"); 
+    if (capValue[i] > capThreshold) { // High recieved
 
-      // Set angle based on servo type
+      // Activate Emoji Toggle
       if (i == 0) {
-        testAngle = 360;
-
-        // STUB: Emoji rotation
         // Should toggle-trigger a state change 
         if (emojiToggle == 0) {
           emojiToggle = 1;
@@ -74,10 +73,9 @@ void loop() {
           }
         }
         
-      } else if (i != 4) { // Note: no servo at 4
+      } else if (i < activeServos) { 
         testAngle = 180;
 
-        
         // Flip Direction at Limits
         if ((servoAngle[i] <= 0 && servoDirection[i] == -1) || (servoAngle[i] >= testAngle && servoDirection[i] == 1)) {
           servoDirection[i] *= -1;    
@@ -87,27 +85,32 @@ void loop() {
         servoAngle[i] += servoDirection[i];
 
         // Apply angle to servo
-        roboServo[i].write(servoAngle)[i];
-
-        // STUB: timing?
+        roboServo[i].write(servoAngle[i]);
         
       }
       
     } else { // Low received
-      digitalWrite(ledPins[i], HIGH); 
 
-      if (servoAngle[i] > emojiState * 72) {
-        //subtr
-      } else if (servoAngle[i] < emojiState * 72) {
-          //add  
+      if (i == emojiState) { // Emoji Light
+        // Move to target angle for select emoji
+        if (servoAngle[0] > emojiState * 72) {
+          servoAngle[0]--;
+        } else if (servoAngle[0] < emojiState * 72) {
+          servoAngle[0]++;
+        } else if (servoAngle[0] == emojiState * 72) {
+          // drive LED
+          
+          analogWrite(ledPins[emojiState], capValue[i]); 
+        }
+        
+        // Turn off toggle
+        if (emojiToggle == 1) {
+          emojiToggle = 0;  
+        }
+        
+      } else { // Unused LEDs
+        analogWrite(ledPins[i], 0);   
       }
-      
-      // Turn off toggle
-      if (emojiToggle == 1) {
-        emojiToggle = 0;  
-      }
-      
-      // drive LED
     }
   }
 
