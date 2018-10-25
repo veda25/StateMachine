@@ -68,11 +68,15 @@ void setup() {
   Serial.begin(9600);
 }
 
+int startPress; // -1
+int startRelease; // -1
+int counterTarget; //200?
+
 void loop() {
 
   // Trigger LEDs with Capacitor Touch Values
   for (int i=0;i<5;i++) { // looping through all sensor inputs
-
+    
     if (analogIn) { // Analog or digital read
       capValue[i] = analogRead(capSense[i]); // get value from capacitor sensor
       capValue[i] = map(capValue[i], 0, 1023, 0, 255);
@@ -82,22 +86,29 @@ void loop() {
     
     if (capValue[i] > capThreshold) { // High recieved
 
+      int activate = 0;
+      if (startPress == -1) {
+        startPress = millis()
+        startRelease = -1;
+      } else {
+          if (startPress + counterTarget == millis()) {
+            activate = 1;
+          }
+      }
+      
       // Activate Emoji Toggle
-      if (i == 0) {
+      if (i == 0 && activate) {
         
         // Should toggle-trigger a state change 
-        if (emojiToggle == 0) {
-          emojiState++;
+        emojiState++;
 
-          Serial.println("Toggle Flag\n");
-          
-          if (emojiState >= 5) { // Loop Emoji State
-            emojiState = 0;  
-          }
-        emojiToggle = 1;
+        Serial.println("Toggle Flag\n");
+        
+        if (emojiState >= 5) { // Loop Emoji State
+          emojiState = 0;  
         }
         
-      } else if (i < activeServos) { // Half servos 1-3
+      } else if (i != 0 && i < activeServos) { // Half servos 1-3
 
         Serial.println("Servo\n");
 
@@ -118,10 +129,8 @@ void loop() {
       
     } else { // Low received
         
-      // Turn off toggle
-      if (emojiToggle == 1) {
-        emojiToggle = 0;  
-      }
+      startPress = -1;
+    
     }
 
     if (i == emojiState) { // Emoji Light
