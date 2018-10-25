@@ -32,7 +32,7 @@ void setup() {
   emojiToggle = 0; // 0 = unpressed, 1 = pressed
   emojiState = 0; // loops after 4...
   capThreshold = 0; 
-  analogIn = 0; // Mode: analog or digital
+  analogIn = 1; // Mode: analog or digital
   armMin = 20;
   armMax = 160;
 
@@ -109,6 +109,8 @@ void loop() {
 
         // Apply angle to servo
         roboServo[i].write(servoAngle[i]);
+
+        // STUB: reverse direction on release?
         
       }
       
@@ -122,13 +124,13 @@ void loop() {
 
     if (i == emojiState) { // Emoji Light
       // Move to target angle for select emoji
-      if (servoAngle[0] > emojiState * 72) {
+      int penta = 72;
+      if (servoAngle[0] > emojiState * penta) {
         servoAngle[0]--;
-      } else if (servoAngle[0] < emojiState * 72) {
+      } else if (servoAngle[0] < emojiState * penta) {
         servoAngle[0]++;
-      } else if (servoAngle[0] == emojiState * 72) {
+      } else if (servoAngle[0] == emojiState * penta) {
         // drive LED
-        Serial.println("Active\n");
         if (analogIn) {
           analogWrite(ledPins[emojiState], capValue[i]); 
         } else {
