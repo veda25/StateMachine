@@ -8,6 +8,7 @@ int ledPins[5];
 int testAngle;
 int emojiToggle;
 int emojiState;
+int emojiSpeed;
 int activeServos;
 int servoDirection[4];
 int servoAngle[4];
@@ -27,6 +28,7 @@ void setup() {
     servoDirection[i] = 1; // (-'ve is opposite direction, can be increased if code changed below...)
   }
   activeServos = 2; // Number of servos running
+  emojiSpeed = 1; // Speed in which to increment the angle of the servo
 
   // Emoji State (and LEDS)
   emojiToggle = 0; // 0 = unpressed, 1 = pressed
@@ -95,7 +97,7 @@ void loop() {
         emojiToggle = 1;
         }
         
-      } else if (i < activeServos) { 
+      } else if (i < activeServos) { // Half servos 1-3
 
         Serial.println("Servo\n");
 
@@ -126,9 +128,11 @@ void loop() {
       // Move to target angle for select emoji
       int penta = 72;
       if (servoAngle[0] > emojiState * penta) {
-        servoAngle[0]--;
+        servoAngle[0] -= emojiSpeed;
+        roboServo[i].write(servoAngle[0]);
       } else if (servoAngle[0] < emojiState * penta) {
-        servoAngle[0]++;
+        servoAngle[0] += emojiSpeed;
+        roboServo[i].write(servoAngle[0]);
       } else if (servoAngle[0] == emojiState * penta) {
         // drive LED
         if (analogIn) {
