@@ -26,7 +26,7 @@ void setup() {
   for (int i=0;i<5;i++) {
     servoDirection[i] = 1; // (-'ve is opposite direction, can be increased if code changed below...)
   }
-  activeServos = 2; // Number of servos running
+  activeServos = 1; //(+1)
 
   // Emoji State (and LEDS)
   emojiToggle = 0; // 0 = unpressed, 1 = pressed
