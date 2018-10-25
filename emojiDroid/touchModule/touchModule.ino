@@ -1,7 +1,13 @@
+#include <Servo.h>
+
 // Variable Setup 
 int capValue[5];
 int capSense[5];
 int ledPins[5];
+Servo servo1;
+int servo_1_angle;
+Servo servo2;
+int servo_2_angle;
 
 void setup() {
 
@@ -16,6 +22,13 @@ void setup() {
   ledPins[2] = 10;
   ledPins[3] = 11; 
   ledPins[4] = 12;
+
+  //servo1.attach(7);
+  servo2.attach(3);
+  servo_1_angle = 0;
+  servo_2_angle = 10;
+  //servo1.write(servo_1_angle);
+  servo2.write(servo_2_angle);
 
   // Set up pin I/O
   for (int i=0;i<5;i++) { 
@@ -36,10 +49,30 @@ void loop() {
     
     if (capValue[i] != 0) { // High recieved
       digitalWrite(ledPins[i], LOW); 
-      Serial.print("on"); 
       
     } else { // Low received
       digitalWrite(ledPins[i], HIGH); 
+        /*
+        if (i == 1) {
+          servo_1_angle++;
+          if (servo_1_angle >= 360) {
+            servo_1_angle = 0;
+            }
+          servo1.write(servo_1_angle);
+          delay(15);
+        } 
+        */
+        if (i == 2) {
+          servo_2_angle++;
+          if (servo_2_angle > 180) {
+            servo_2_angle = 10;
+            }
+          if (servo_2_angle <= 10) {servo_2_angle = 180;}
+          servo1.write(servo_2_angle);
+          delay(15);
+        }
+        
     }
   }
 }
+
