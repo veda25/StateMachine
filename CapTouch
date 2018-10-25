@@ -1,0 +1,77 @@
+//Pin 2 : Input for reading the button - Analog with tilda
+//Pin 4: Output foe controlling the LED
+// int ButtonValue = 1;
+#include<Servo.h> // include Servo library
+int cp1,cp2,cp3,cp4,cp5 = 0;
+int CapSense1 = A0;
+int CapSense2 = A1;
+int CapSense3 = A2;
+int CapSense4 = A3;
+int CapSense5 = A4;
+int LED1 = 6;
+int LED2 = 9;
+int LED3 = 10;
+int LED4 = 11;
+int LED5 = 12;
+
+int reading1;
+Servo smallservo;
+Servo bigservo;
+void setup() {
+  smallservo.attach(3);
+  bigservo.attach(7);
+ 
+  pinMode(CapSense1, INPUT);
+  pinMode(CapSense2,INPUT);
+  pinMode(CapSense3, INPUT);
+  pinMode(CapSense4, INPUT);
+  pinMode(CapSense5,INPUT);
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2,OUTPUT);
+  pinMode(LED3,OUTPUT);
+  pinMode(LED4,OUTPUT);
+  pinMode(LED5,OUTPUT);
+  Serial.begin(9600);
+  
+//  serial.begin(9600);
+}
+void loop() {
+   cp1 = digitalRead(CapSense1);
+   cp2 = digitalRead(CapSense2);
+   cp3 = digitalRead(CapSense3); 
+   cp4 = digitalRead(CapSense4);
+   cp5 = digitalRead(CapSense5); 
+   
+  if(cp1 != 0 ){
+  digitalWrite(LED1, LOW);
+  Serial.print("on"); } 
+  else
+  digitalWrite(LED1, HIGH);
+  bigservo.write(72); 
+  
+  if(cp2 != 0 ){
+  digitalWrite(LED2, LOW); 
+  Serial.print("on"); } 
+  else
+  digitalWrite(LED2, HIGH);
+  bigservo.write(72*2); 
+  
+  if(cp3 != 0 ){
+  digitalWrite(LED3, LOW); 
+  Serial.print("on"); } 
+  else
+  digitalWrite(LED3, HIGH);
+  bigservo.write(72*4); 
+  
+  if(cp4 != 0 ){
+  digitalWrite(LED4, LOW); 
+  Serial.print("on"); } 
+  else
+  digitalWrite(LED4, HIGH);
+ if(cp5 != 0 ){
+  digitalWrite(LED5, LOW); 
+  Serial.print("on"); } 
+  else
+  digitalWrite(LED5, HIGH);
+  bigservo.write(72*5);
+}
